@@ -27,6 +27,7 @@ def winning(board, player):
 
 #the main program loop
 while(True):
+	
 	while(True):
 		try:
 			human_input=int(input("Please enter your move corresponding to the box number: "))
