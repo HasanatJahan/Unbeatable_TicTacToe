@@ -25,40 +25,65 @@ def winning(board, player):
 	else:
 		return False
 
+
+#evaluates the score of the game
+def evaluation(board):
+	if (winning(board, human)):
+		return +10
+	elif (winning(board, robot)):
+		return -10
+	elif(len(empty_spots)==0):
+		return 0
+	#this here is just a test value for the current board
+	else:
+		return 15
+
+#this is to find the empty spots on the board 
+def empty_spots_func(board):
+	for i in board:
+		if(i!="X" and i!="O"):
+			empty_spots.append(i)
+
+
+def minimax(spot, empty_spots, depth, maximizing_player):
+	if depth==0:
+		return evaluation(board)
+
+	if maximizing_player:
+		maxEval= +1000000
+		for spot in empty_spots:
+			eval = minimax(spot, empty_spots, depth-1, False)
+			maxEval= max(maxEval, eval)
+		return maxEval
+
+	else:
+		minEval= -1000000
+		for spot in empty_spots:
+			eval= minimax(spot, empty_spots, depth-1, True)
+			minEval=min(minEval, eval)
+		return minEval
+
+
+
 #the main program loop
 while(True):
-	
+
 	while(True):
-		try:
-			human_input=int(input("Please enter your move corresponding to the box number: "))
-			break
+		try:	
+			human_input=int(input("Please enter an integer from 0 to 8: "))
+			if(human_input>=0 and human_input<=8):
+				break
 		except ValueError:
-			print("Please enter a postitive integer value: ")
-		
+			print("Input must be an integer value.")	
+
 
 	#returns a list of empty positions in the array 
 	empty_spots=[]
-	def empty_spots_func(board):
-		for i in board:
-			if(i!="X" and i!="O"):
-				empty_spots.append(i)
+	empty_spots_func(board)
+
+	moves= []
+	for spot in empty_spots:
+		spot_eval= minimax(spot, empty_spots, len(empty_spots), True)
 
 
-	#evaluates the score of the game
-	def evaluation(board):
-		if (winning(board, human)):
-			score=+10
-		elif (winning(board, robot)):
-			score=-10
-		elif(len(empty_spots)==0):
-			score=0
-
-	#this will store the evaluation of the moves of each empty spot
-	moves=[]
-	#this will decide the best possible move- 
-	def minimax(current_position, depth, maximizing_player): 	
-		#this updates the empty spots available on the board
-		empty_spots_func(board)
-
-		pass
 
