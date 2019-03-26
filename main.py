@@ -34,9 +34,9 @@ def evaluation(board):
 		return -10
 	elif(len(empty_spots)==0):
 		return 0
-	#this here is just a test value for the current board
 	else:
-		return 15
+		return 2
+
 
 #this is to find the empty spots on the board 
 def empty_spots_func(board):
@@ -47,18 +47,31 @@ def empty_spots_func(board):
 
 def minimax(spot, empty_spots, depth, maximizing_player):
 	if depth==0:
-		return evaluation(board)
+		eval= evaluation(board)
+		print("The evaluation function returns: ")
+		print(evaluation(board))
+		return eval
 
 	if maximizing_player:
-		maxEval= +1000000
+		maxEval= -1000000
+		#for each move in all possible moves
 		for spot in empty_spots:
+		
+			#make the move
+			board[spot]=robot
+
 			eval = minimax(spot, empty_spots, depth-1, False)
 			maxEval= max(maxEval, eval)
 		return maxEval
 
 	else:
-		minEval= -1000000
+		minEval= +1000000
+		#for each move in all possible moves
 		for spot in empty_spots:
+
+			#make the move 
+			board[spot]=human
+
 			eval= minimax(spot, empty_spots, depth-1, True)
 			minEval=min(minEval, eval)
 		return minEval
@@ -84,6 +97,9 @@ while(True):
 	moves= []
 	for spot in empty_spots:
 		spot_eval= minimax(spot, empty_spots, len(empty_spots), True)
+		moves.append(spot_eval)
+		print("The spot eval is: ")
+		print(spot_eval)
 
 
 
