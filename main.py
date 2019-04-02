@@ -9,14 +9,14 @@ robot= "X"
 
 #winning board combinations
 def winning(board, player):
-		#horizontal test
+		#horizontal tests
 	if((board[0] == player and board[1]==player and board[2]==player) or
 		(board[3]==player and board[4]==player and board[5]==player) or
 		(board[6]==player and board[7]==player and board[8]==player) or
-		#diagonals test
+		#diagonal tests
 		(board[0]==player and board[4]==player and board[8]==player) or
 		(board[2]==player and board[4]==player and board[6]==player) or
-		#verticals test
+		#vertical tests
 		(board[0]==player and board[3]==player and board[6]==player) or
 		(board[1]==player and board[4]==player and board[7]==player) or
 		(board[2]==player and board[5]==player and board[8]==player)
@@ -28,14 +28,16 @@ def winning(board, player):
 
 #evaluates the score of the game
 def evaluation(board):
-	if (winning(board, human)):
+	if (winning(board, robot)):
 		return +10
-	elif (winning(board, robot)):
+	elif (winning(board, human)):
 		return -10
 	elif(len(empty_spots)==0):
 		return 0
-	else:
-		return 2
+	#trying to get another value
+	# else:
+		# return 2
+
 
 
 #this is to find the empty spots on the board 
@@ -46,10 +48,9 @@ def empty_spots_func(board):
 
 
 def minimax(spot, empty_spots, depth, maximizing_player):
-	if depth==0:
+	if depth<=0:
 		eval= evaluation(board)
-		print("The evaluation function returns: ")
-		print(evaluation(board))
+		print(f'The evaluation function returns: {evaluation(board)}')
 		return eval
 
 	if maximizing_player:
@@ -60,8 +61,15 @@ def minimax(spot, empty_spots, depth, maximizing_player):
 			#make the move
 			board[spot]=robot
 
+			#evaluate the outcome of the move
 			eval = minimax(spot, empty_spots, depth-1, False)
+
+			#then remove the move and replace it with the number
+			board[spot]=spot
+			
 			maxEval= max(maxEval, eval)
+
+		# print(f'The maximum evaluation {maxEval}')
 		return maxEval
 
 	else:
@@ -72,8 +80,16 @@ def minimax(spot, empty_spots, depth, maximizing_player):
 			#make the move 
 			board[spot]=human
 
+			#evaluate the outcome of the move
 			eval= minimax(spot, empty_spots, depth-1, True)
+
+			#then remove the spot
+			board[spot]=spot
+
+			#figure out the minimal evaluation
 			minEval=min(minEval, eval)
+
+		# print(f'The minimal evaluation is {minEval}')
 		return minEval
 
 
@@ -89,6 +105,8 @@ while(True):
 		except ValueError:
 			print("Input must be an integer value.")	
 
+	#now actually place the human input in the postion
+	board[human_input]= human
 
 	#returns a list of empty positions in the array 
 	empty_spots=[]
@@ -97,9 +115,10 @@ while(True):
 	moves= []
 	for spot in empty_spots:
 		spot_eval= minimax(spot, empty_spots, len(empty_spots), True)
+		print(f'The spot eval is {spot_eval}')
 		moves.append(spot_eval)
-		print("The spot eval is: ")
-		print(spot_eval)
 
+	empty_spots_func(board)
+	print(f'The spot eval is {test_spot_eval}')
 
 
