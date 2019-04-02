@@ -34,23 +34,26 @@ def evaluation(board):
 		return -10
 	elif(len(empty_spots)==0):
 		return 0
-	#trying to get another value
-	# else:
-		# return 2
+
 
 
 
 #this is to find the empty spots on the board 
+# I THINK IT WOULD BE BETTER TO USE A FILTER HERE BECAUSE 
+# WE HAVE TO INITIALIZE EMPTY_SPOTS ARRAY EVERYWHERE AND THATS NOT GOOD 
 def empty_spots_func(board):
+	# empty_spots=[]
 	for i in board:
 		if(i!="X" and i!="O"):
 			empty_spots.append(i)
 
 
+
+
 def minimax(spot, empty_spots, depth, maximizing_player):
 	if depth<=0:
 		eval= evaluation(board)
-		print(f'The evaluation function returns: {evaluation(board)}')
+		# print(f'The evaluation function returns: {evaluation(board)}')
 		return eval
 
 	if maximizing_player:
@@ -100,6 +103,7 @@ while(True):
 	while(True):
 		try:	
 			human_input=int(input("Please enter an integer from 0 to 8: "))
+			#this should only take in empty spots
 			if(human_input>=0 and human_input<=8):
 				break
 		except ValueError:
@@ -108,17 +112,27 @@ while(True):
 	#now actually place the human input in the postion
 	board[human_input]= human
 
+	#CHECK IF ANYONE WON - IF YES DECLARE WINNER AND REFRESH BOARDS
+	#ACTUALLY FIRST CHECK WHICH WOULD BE THE BEST PLACE TO PUT IF SOMEONE HAS WON
+
 	#returns a list of empty positions in the array 
 	empty_spots=[]
 	empty_spots_func(board)
+	print(empty_spots)
 
 	moves= []
 	for spot in empty_spots:
 		spot_eval= minimax(spot, empty_spots, len(empty_spots), True)
 		print(f'The spot eval is {spot_eval}')
 		moves.append(spot_eval)
+	# print(f'The spot eval is {test_spot_eval}')
 
-	empty_spots_func(board)
-	print(f'The spot eval is {test_spot_eval}')
+	#go through the moves array and pick out the best
+	best_move= empty_spots[0]
+	for move in moves:
+		best_move= max(best_move, move)
+	print(best_move)
 
-
+	#place the robots move 
+	board[best_move]= robot
+	print(board)
