@@ -36,18 +36,8 @@ def evaluation(board):
 		return 0
 
 
-
-
-#this is to find the empty spots on the board 
-# I THINK IT WOULD BE BETTER TO USE A FILTER HERE BECAUSE 
-# WE HAVE TO INITIALIZE EMPTY_SPOTS ARRAY EVERYWHERE AND THATS NOT GOOD 
-def empty_spots_func(board):
-	# empty_spots=[]
-	for i in board:
-		if(i!="X" and i!="O"):
-			empty_spots.append(i)
-
-
+def empty_spots_func(spot):
+	return (spot!="X" and spot!="O")
 
 
 def minimax(spot, empty_spots, depth, maximizing_player):
@@ -116,9 +106,11 @@ while(True):
 	#ACTUALLY FIRST CHECK WHICH WOULD BE THE BEST PLACE TO PUT IF SOMEONE HAS WON
 
 	#returns a list of empty positions in the array 
-	empty_spots=[]
-	empty_spots_func(board)
+	empty_spots=list(filter(empty_spots_func, board))
 	print(empty_spots)
+
+	# empty_spots_func(board)
+	# print(empty_spots)
 
 	moves= []
 	for spot in empty_spots:
