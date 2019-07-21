@@ -1,6 +1,23 @@
-board= [ "X", 1, 2, 
-		 3, "O", 5, 
-		 "X", 7, 8]
+board_1= [ "X", 1, 2, 
+   		   3, "O", 5, 
+		   "X", 7, 8]
+
+board_2=["X","X","X",
+		  3, 4, 5,
+		  6, "O", 8]
+
+board_3=["O","X","O",
+		  3,"O",5,
+		  6, 7,"O"]
+
+board_4=["O",1,"X",
+		"O", 4, "X",
+		"O",7, "X"]
+
+board_5=[ 0, "X", "O", 
+		 3, 4, 5, 
+		 6, "X", 8]
+
 
 human = "O"
 robot= "X"
@@ -26,81 +43,105 @@ def winning(board, player):
 
 #evaluates the score of the game
 def evaluation(board):
-	if (winning(board, robot)):
-		return +10
-	elif (winning(board, human)):
+	if (winning(board, human)):
 		return -10
-	elif(len(empty_spots)==0):
+	elif (winning(board, robot)):
+		return +10
+	# elif(len(empty_spots)==0):
+	else:
 		return 0
 
-def minimax(spot, empty_spots, depth, maximizing_player):
-	if depth==0:
-		eval= evaluation(board)
-		print(f'The evaluation function returns: {evaluation(board)}')
-		return eval
 
-	if maximizing_player:
-		maxEval= -1000000
-		
-		#place it here and then check all the children
-		board[spot]=robot
 
-		#for each move in all possible moves
-		for spot in empty_spots:
+print(f'Evaluation board_1: {evaluation(board_1)}')
+# print(f'Evaluation board_2: {evaluation(board_2)}')
+# print(f'Evaluation board_3: {evaluation(board_3)}')
+# print(f'Evaluation board_4: {evaluation(board_4)}')
+# print(f'Evaluation board_5: {evaluation(board_5)}')
 
-			#make the move
-			# board[spot]=robot
 
-			#evaluate the outcome of the move
-			eval = minimax(spot, empty_spots, depth-1, False)
+#function to check end state of the game 
+def game_over(board_5):
+	return winning(board_5, robot) or winning(board_5, human)
 
-			#then remove the move and replace it with the number
-			# board[spot]=spot
+
+scores=[]	#an array of scores
+moves=[]	#an array of moves
+
+def minimax(board, depth, maximizing_player, moves):
+	#pick out the empty spots left
+	empty_spots=list(filter(lambda spot: (spot!="O" and spot!="X"), board_5))
+
+	#checking base case 
+	if depth==0 or game_over(board_5):
+		func_eval= evaluation(board_5)
+		# moves.append(func_eval)
+		print(board_5 , func_eval)
+
+		return func_eval
+
+
+	for spot in empty_spots:
+		if maximizing_player:
+			func_eval= -100000
+			#place robot in that spot 
+			board_5[spot]=robot
+			#find maximum evaluation
+			func_eval= max(func_eval, minimax(empty_spots, depth-1, False, moves))
+			#remove the placed robot
+			board_5[spot]= spot
+			# moves.append(func_eval)
+
+
+		else:
+			func_eval= +100000
+			#place the human input 
+			board_5[spot]=human
+			#find the minimum evaluation
+			func_eval=min(func_eval, minimax(empty_spots, depth-1, True, moves))
+			#remove the empty spot
+			board_5[spot]= spot
+			# moves.append(func_eval)
+
 			
-			maxEval= max(maxEval, eval)
+		moves.append(func_eval)
 
-		# print(f'The maximum evaluation {maxEval}')
 
-		#remove the move
-		board[spot]=spot
+	return func_eval
 
-		return maxEval
 
-	else:
-		minEval= +1000000
+############################################################################
+#Testing
+print(f'Testing if the moves array was empty to begin with {moves}')
+empty_spots=list(filter(lambda spot: (spot!="O" and spot!="X"), board_5))
+print(f'Print the length of the empty spot {len(empty_spots)}')
 
-		#place the human spot
-		board[spot]=human
 
-		#for each move in all possible moves
-		for spot in empty_spots:
+spot_eval_5= minimax(board_5, len(empty_spots), True, moves)
 
-			#make the move 
-			# board[spot]=human
+# print(f'spot_eval_5 is {spot_eval_5}')
+print(f'This is the moves array {moves}')
+print(f'The length of the moves array {len(moves)}')
 
-			#evaluate the outcome of the move
-			eval= minimax(spot, empty_spots, depth-1, True)
-
-			#then remove the spot
-			board[spot]=spot
-
-			#figure out the minimal evaluation
-			minEval=min(minEval, eval)
-
-		# print(f'The minimal evaluation is {minEval}')
-		#remove the human
-		board[spot]=spot
-
-		return minEval
+##############################################################################
 
 
 
 
-empty_spots=list(filter(lambda spot: (spot!="O" and spot!="X"), board))
 
-for spot in empty_spots:
-	spot_eval= minimax(spot, empty_spots, len(empty_spots), True)
-	print(f'The spot eval is {spot_eval}')
+"""
+def print_board(board):
+	board_string = ''
+	for i in range(5):
+		for j in range(5):
+			if(i%2!=0 and j%2==0):
+				print("|", end=" "),
+			elif(i%2==0 and j%2!=0):
+				print("__", end=" "),
+			else:
+				print("  ", end=" "),
+		print("\n")
 
 
-print(evaluation(board_1))
+print_board(board_5)
+"""
