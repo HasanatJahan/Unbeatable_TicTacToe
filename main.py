@@ -6,7 +6,7 @@ board= [ 0, 1, 2,
 human = "O"
 robot= "X"
 
-
+# these define if the player is winning 
 def winning(board, player):
 		#horizontal tests
 	if((board[0] == player and board[1]==player and board[2]==player) or
@@ -24,56 +24,123 @@ def winning(board, player):
 	else:
 		return False
 
-
+# Evaluation function of board that returns positive for robot but negative for robot 
 def evaluation(board):
 	if (winning(board, human)):
 		return -10
 	elif (winning(board, robot)):
 		return +10
 	else:
-		return 0
+		# made draw a 5 to make the position score array to work
+		return 5
 
-################################################################################
+
+################################################################
+
+# Create a function to display the board 
+# the board will modify according to the move the player makes 
+# this function will simpy display that 
+def display_board(board):
+	print(f" {board[0]} | {board[1]} | {board[2]} ")
+	print("___________")
+	print(f" {board[3]} | {board[4]} | {board[5]}")
+	print("___________")
+	print(f" {board[6]} | {board[7]} | {board[8]}")
 
 
-def minimax(spot, empty_spots, depth, maximizing_player):
+# check if the function call workds 
+display_board(board)
+
+#################################################################
+
+
+
+# the list scores should save the score of the positions left 
+# by default we assume- the index corresponds to the position
+position_score = [0, 0, 0, 0, 0, 0, 0, 0, 0]
+
+
+# Let's check what empty spots returns 
+# empty spots returns all the spots that are not occupied by a move 
+empty_spots=list(filter(lambda spot: (spot!="O" and spot!="X"), board))
+print(f'Empty spots return value {empty_spots}')
+
+
+
+
+# the minimax function returns the max evaluation for the specific 
+# postion specified 
+def minimax(board, depth, is_max_player):
+	# variable holds changing empty spots on the board based on game tree 
 	empty_spots=list(filter(lambda spot: (spot!="O" and spot!="X"), board))
 	
-	if depth==0 or len(empty_spots)==0:
-		eval= evaluation(board)
-		# print(f'The evaluation function returns: {evaluation(board)}')
-		# return evaluation(board)
-		return eval
+	# base case 
+	if depth == 0:
+		board_eval = evaluation(board)
+		return board_eval
 
-	if maximizing_player:
-		maxEval= -1000000		
-		#for the child of that position
+	# simulating the robot move 
+	if is_max_player:
+		max_eval = -10000
+		# no go through each child of that position 
 		for spot in empty_spots:
-			board[spot]=robot
-			eval = minimax(spot, empty_spots, depth-1, False)
+			# the board is modified to include the move
+			board[spot] = robot
+			# score of position evaluated revursively 
+			pos_eval = minimax(board, depth-1, False)
 
-			board[spot]=spot
-			maxEval= max(maxEval, eval)
+			# after evaluation is found, remove the move 
+			board[spot] = spot
+			# retain maximum evaluation from branch of game tree
+			max_eval = max(max_eval, pos_eval)
 
-		return maxEval
+		return max_eval
 
+	# simulating the human move 
 	else:
-		minEval= +1000000
-		# empty_spots=list(filter(lambda spot: (spot!="O" and spot!="X"), board))
-		# print(f'testing empty spots from minimizing_player{empty_spots}')
-
-		#for each child of that position
+		min_eval = +10000
+		
+		# now go through each child of the tree based on the move
 		for spot in empty_spots:
-			board[spot]=human
-			eval= minimax(spot, empty_spots, depth-1, True)
+			# board is modified to include the move
+			board[spot] = human 
+			# score of postion evaluated recursively
+			pos_eval = minimax(board, depth-1, True)
 
-			board[spot]=spot
-			minEval=min(minEval, eval)
+			# remove the move
+			board[spot] = spot
 
-		return minEval
+			#retain minimum evaluation from the branch of the game tree
+			min_eval = min(min_eval, pos_eval)
+
+		return min_eval
 
 
-#####################################################################################
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+################################################################################
+# OLD CODE 
+'''
+
 
 #the main program loop
 while(True):
@@ -82,7 +149,12 @@ while(True):
 	empty_spots=list(filter(lambda spot: (spot!="O" and spot!="X"), board))
 	if(len(empty_spots))==0:
 		eval=evaluation(board)
-		print(f'The winner is {eval}')
+		if eval > 0: 
+			print(f'The winner is the robot')
+		elif eval < 0:
+			print(f'The winner is the human')
+		else: 
+			print("It's a damn tie")
 		break
 
 	#this works for the human input
@@ -118,7 +190,4 @@ while(True):
 	#this part works
 	board[best_move]=robot
 
-##############################################################################
-### THe evaluations are being accounted for?/done? wrong 
-###
-##############################################################################
+'''
