@@ -46,7 +46,6 @@ def display_board(board):
 	print(f" {board[6]} | {board[7]} | {board[8]} ")
 
 
-
 # function to check if there are any moves left on the table 
 def is_moves_left(board):
 	for spot in board:
@@ -56,11 +55,23 @@ def is_moves_left(board):
 	return False
 
 ###########################################################################
+
+def find_empty_spots(board):
+	empty_spots = []
+	for spot in board:
+		if(spot != "X" and spot != "O"):
+			empty_spots.append(spot)
+	return empty_spots
+
+# testing the empty spots function
+print(f"Empty spots from new function  {find_empty_spots(board)}")
+
 # the minimax function returns the max evaluation for the specific 
 # postion specified 
 def minimax(board, is_max_player):
 	# variable holds changing empty spots on the board based on game tree 
-	empty_spots=list(filter(lambda spot: (spot!="O" and spot!="X"), board))
+	# empty_spots=list(filter(lambda spot: (spot != "O" and spot != "X"), board))
+	empty_spots = find_empty_spots(board)
 	# print(f"Empty spots in gameplay {empty_spots}")
 
 	# a list to hold the moves 
@@ -83,7 +94,7 @@ def minimax(board, is_max_player):
 		for spot in empty_spots:
 			
 			# testing 
-			print(f"this is what board returns in minimax {display_board(board)}")
+			#print(f"this is what board returns in minimax {display_board(board)}")
 
 			# the board is modified to include the move
 			board[spot] = robot
@@ -171,9 +182,9 @@ initialize_game(board)
 
 def game_run(board):
 	while(True):
-		#this is so that the last empty spot is accounted for 
-		#and the user is not allowed anymore inputs  
-		empty_spots=list(filter(lambda spot: (spot!="O" and spot!="X"), board))
+		# this is so that the last empty spot is accounted for 
+		# and the user is not allowed anymore inputs  
+		# empty_spots=list(filter(lambda spot: (spot!="O" and spot!="X"), board))
 		if not is_moves_left:
 			game_eval=evaluation(board)
 			if game_eval > 0: 
@@ -192,7 +203,7 @@ def game_run(board):
 		# the while loop is not broken until the right input is put
 		while(True):
 			try:	
-				print(f"Make your move from spots {empty_spots}")
+				print(f"Make your move from spots {find_empty_spots(board)}")
 				display_board(board)
 				human_input=int(input("Please enter an integer: "))
 				#this should only take in empty spots
@@ -207,7 +218,7 @@ def game_run(board):
 		board[human_input] = human 
 
 		# display the board again 
-		display_board(board)
+		# display_board(board)
 
 		# Now for the robot to choose the best move based on the minimax
 		# algorithm 
@@ -223,17 +234,16 @@ def game_run(board):
 			# run minimax for robot turn to find the best evaluation for move
 			position_scores[spot] = minimax(board, True)
 			# remove the move and 
-			board[spot] = board
+			board[spot] = spot
 
 		# after finding the evaluation for all the empty spots- 
 		# find the best move from all the evalauted moves and make the move 
 		robot_move = find_best_move(position_scores)
-		board[robot_move]
+		board[robot_move] = robot
 
 		print("The bot has chosen it's move ")
 		display_board(board)
 
-		break
 
 
 
