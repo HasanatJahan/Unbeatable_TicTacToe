@@ -32,10 +32,8 @@ def evaluation(board):
 		return +10
 	else:
 		# made draw a 5 to make the position score array to work
-		return 5
+		return 0
 
-
-################################################################
 
 # Create a function to display the board 
 # the board will modify according to the move the player makes 
@@ -43,27 +41,47 @@ def evaluation(board):
 def display_board(board):
 	print(f" {board[0]} | {board[1]} | {board[2]} ")
 	print("___________")
-	print(f" {board[3]} | {board[4]} | {board[5]}")
+	print(f" {board[3]} | {board[4]} | {board[5]} ")
 	print("___________")
-	print(f" {board[6]} | {board[7]} | {board[8]}")
+	print(f" {board[6]} | {board[7]} | {board[8]} ")
 
 
-# check if the function call workds 
+# check if the function call works 
 display_board(board)
 
 #################################################################
 
-
-
 # the list scores should save the score of the positions left 
 # by default we assume- the index corresponds to the position
-position_score = [0, 0, 0, 0, 0, 0, 0, 0, 0]
-
+position_scores = []
 
 # Let's check what empty spots returns 
 # empty spots returns all the spots that are not occupied by a move 
 empty_spots=list(filter(lambda spot: (spot!="O" and spot!="X"), board))
 print(f'Empty spots return value {empty_spots}')
+
+# this finds the best move in the list of scores and returns the best move, 
+# the best move is the index of the score
+def find_best_move(position_scores):
+	max_score = position_scores[0]
+	best_move = 0
+	for score in position_scores:
+		if max_score < score:
+			max_score = score
+			best_move = position_scores.index(score)
+	
+	return best_move
+
+
+################################################################
+
+# function to check if there are any moves left on the table 
+def is_moves_left(board):
+	for spot in board:
+		if(spot != "O" and spot != "X"):
+			return True
+	# if no moves left 
+	return False
 
 
 
@@ -74,10 +92,18 @@ def minimax(board, depth, is_max_player):
 	# variable holds changing empty spots on the board based on game tree 
 	empty_spots=list(filter(lambda spot: (spot!="O" and spot!="X"), board))
 	
+	# a list to hold the moves 
+	moves= []
+
 	# base case 
-	if depth == 0:
+	#if depth == 0:
+	if not is_moves_left(board):
 		board_eval = evaluation(board)
+
+		# append board evaluation to position scores 
+		position_scores.append(board_eval)
 		return board_eval
+
 
 	# simulating the robot move 
 	if is_max_player:
@@ -86,11 +112,16 @@ def minimax(board, depth, is_max_player):
 		for spot in empty_spots:
 			# the board is modified to include the move
 			board[spot] = robot
+			
 			# score of position evaluated revursively 
 			pos_eval = minimax(board, depth-1, False)
 
 			# after evaluation is found, remove the move 
 			board[spot] = spot
+
+			# append the move to moves array after adding 
+			moves.append(spot)
+
 			# retain maximum evaluation from branch of game tree
 			max_eval = max(max_eval, pos_eval)
 
@@ -104,11 +135,15 @@ def minimax(board, depth, is_max_player):
 		for spot in empty_spots:
 			# board is modified to include the move
 			board[spot] = human 
+
 			# score of postion evaluated recursively
 			pos_eval = minimax(board, depth-1, True)
 
 			# remove the move
 			board[spot] = spot
+
+			# append the move to moves array after adding 
+			moves.append(spot)
 
 			#retain minimum evaluation from the branch of the game tree
 			min_eval = min(min_eval, pos_eval)
@@ -117,7 +152,23 @@ def minimax(board, depth, is_max_player):
 
 
 
+#############
+# TESTING
+# now to test the minimax function on an actual move 
+# creating a fake testing board 
+test_board = [	0, 1, 2, 
+				3, "O", 5, 
+		 		6, 7, "X"]
 
+
+#display_board(test_board)
+
+print(f"The minimax evaluation returned {minimax(test_board, 3, True)}")
+
+# TODO: weher did I specify which move it is evaluating it for, 
+# the minimax should do this move specifically 
+
+#################################################################
 
 
 
