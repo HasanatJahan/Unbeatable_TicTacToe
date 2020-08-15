@@ -54,7 +54,6 @@ def is_moves_left(board):
 	# if no moves left 
 	return False
 
-###########################################################################
 
 def find_empty_spots(board):
 	empty_spots = []
@@ -64,20 +63,32 @@ def find_empty_spots(board):
 	return empty_spots
 
 
+
+# function that keeps track whether the game is over or not 
+def game_over(board):
+	game_won = (evaluation(board) == 10 or evaluation(board) == -10)
+	if game_won or not is_moves_left(board):
+		return True
+	return False
+	
+
 # the minimax function returns the max evaluation for the specific 
 # postion specified 
+
+# TODO: something to note with minimax, the base case should not always 
+# be when the board is filled, it can also stop when an evaluation is met 
+
 def minimax(board, is_max_player):
 	# variable holds changing empty spots on the board based on game tree 
 	# empty_spots=list(filter(lambda spot: (spot != "O" and spot != "X"), board))
 	empty_spots = find_empty_spots(board)
 	# print(f"Empty spots in gameplay {empty_spots}")
 
-	# a list to hold the moves 
-	moves= []
-
 	# base case 
 	#if depth == 0:
-	if not is_moves_left(board):
+	#if not is_moves_left(board):
+	#  CHANGE DONE HERE 
+	if game_over(board): 
 		board_eval = evaluation(board)
 
 		# append board evaluation to position scores 
@@ -103,9 +114,6 @@ def minimax(board, is_max_player):
 			# after evaluation is found, remove the move 
 			board[spot] = spot
 
-			# append the move to moves array after adding 
-			moves.append(spot)
-
 			# retain maximum evaluation from branch of game tree
 			max_eval = max(max_eval, pos_eval)
 
@@ -127,9 +135,6 @@ def minimax(board, is_max_player):
 			# remove the move
 			board[spot] = spot
 
-			# append the move to moves array after adding 
-			moves.append(spot)
-
 			#retain minimum evaluation from the branch of the game tree
 			min_eval = min(min_eval, pos_eval)
 
@@ -137,15 +142,13 @@ def minimax(board, is_max_player):
 
 
 
-#####################################################################
-
 # the list scores should save the score of the positions left 
 # by default we assume- the index corresponds to the position
-
 # populate it with large values so that the occupied spots are not picked 
 position_scores = [ -10000, -10000, -10000, 
 					-10000, -10000, -10000, 
 					-10000, -10000, -10000]
+
 
 # this finds the best move in the list of scores and returns the best move, 
 # the best move is the index of the score - within position scores 
@@ -160,14 +163,8 @@ def find_best_move(position_scores):
 	return best_move
 
 
-#################################################################
 
-# function that keeps track whether the game is over or not 
-def game_over(board):
-	game_won = (evaluation(board) == 10 or evaluation == -10)
-	if game_won or not is_moves_left(board):
-		return True
-	return False
+
 
 #################################################################
 #### GAMEPLAY ####
@@ -185,8 +182,6 @@ initialize_game(board)
 
 # Now for the main program loop - the gameplay portion of the game
 
-# Let's check what empty spots returns 
-# empty spots returns all the spots that are not occupied by a move 
 
 def game_run(board):
 	while(True):
@@ -204,7 +199,7 @@ def game_run(board):
 				print(f'The winner is the you - it must be a bug please be nice to my bot :(')
 				break
 			else: 
-				print("A tie with a robot is a defeat in it's own way")
+				print("It's a draw! But considering a draw with a bot...")
 				break
 			break
 
@@ -234,8 +229,8 @@ def game_run(board):
 		# algorithm 
 
 		# update the list of empty spots 
-		empty_spots=list(filter(lambda spot: (spot!="O" and spot!="X"), board))
-
+		# empty_spots=list(filter(lambda spot: (spot!="O" and spot!="X"), board))
+		empty_spots = find_empty_spots(board)
 
 		## now we have to reset position scores  - new change 
 		position_scores = [ -10000, -10000, -10000, 
@@ -249,8 +244,8 @@ def game_run(board):
 		for spot in empty_spots:
 			# place the move
 			board[spot] = robot
-			# run minimax for robot turn to find the best evaluation for move
-			position_scores[spot] = minimax(board, True)
+			# run minimax starting with the human's turn 
+			position_scores[spot] = minimax(board, False)
 			# remove the move  
 			board[spot] = spot
 
@@ -265,15 +260,15 @@ def game_run(board):
 							-10000, -10000, -10000, 
 							-10000, -10000, -10000]
 		
+		# make the robot move
 		board[robot_move] = robot
 
 		print(f"The bot has chosen it's move at spot {robot_move}")
+		
+		# finally display board before asking for input again
 		display_board(board)
 
-
-
-
-
+# Run the game 
 game_run(board)
 
 
