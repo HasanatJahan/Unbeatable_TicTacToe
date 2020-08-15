@@ -164,8 +164,8 @@ def find_best_move(position_scores):
 
 # function that keeps track whether the game is over or not 
 def game_over(board):
-	game_won = evaluation(board) == 10 or evaluation == -10
-	if game_won or not is_moves_left:
+	game_won = (evaluation(board) == 10 or evaluation == -10)
+	if game_won or not is_moves_left(board):
 		return True
 	return False
 
@@ -198,13 +198,13 @@ def game_run(board):
 		if game_over(board): 
 			game_eval=evaluation(board)
 			if game_eval > 0: 
-				print(f'The winner is the robot')
+				print(f'The winner is the robot!')
 				break # this is for there for the game play to end 
 			elif game_eval < 0:
-				print(f'The winner is the human')
+				print(f'The winner is the you - it must be a bug please be nice to my bot :(')
 				break
 			else: 
-				print("It's a damn tie")
+				print("A tie with a robot is a defeat in it's own way")
 				break
 			break
 
@@ -267,7 +267,7 @@ def game_run(board):
 		
 		board[robot_move] = robot
 
-		print("The bot has chosen it's move at spot {robot_move}")
+		print(f"The bot has chosen it's move at spot {robot_move}")
 		display_board(board)
 
 
