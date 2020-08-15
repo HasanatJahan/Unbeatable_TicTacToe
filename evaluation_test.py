@@ -144,4 +144,21 @@ def print_board(board):
 
 
 print_board(board_5)
+
+
+############
+# TESTING
+# now to test the minimax function on an actual move 
+# creating a fake testing board 
+test_board = [	0, 1, 2, 
+				3, "O", 5, 
+		 		6, 7, "X"]
+
+
+#display_board(test_board)
+
+print(f"The minimax evaluation returned {minimax(test_board, 3, True)}")
+
+# TODO: weher did I specify which move it is evaluating it for, 
+# the minimax should do this move specifically 
 """

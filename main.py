@@ -63,8 +63,6 @@ def find_empty_spots(board):
 			empty_spots.append(spot)
 	return empty_spots
 
-# testing the empty spots function
-print(f"Empty spots from new function  {find_empty_spots(board)}")
 
 # the minimax function returns the max evaluation for the specific 
 # postion specified 
@@ -164,11 +162,13 @@ def find_best_move(position_scores):
 
 #################################################################
 
-"""
-def reset_scores(position_scores):
-	list_len = len(position_scores) -1 
+# function that keeps track whether the game is over or not 
+def game_over(board):
+	game_won = evaluation(board) == 10 or evaluation == -10
+	if game_won or not is_moves_left:
+		return True
+	return False
 
-"""
 #################################################################
 #### GAMEPLAY ####
 ##################
@@ -193,7 +193,9 @@ def game_run(board):
 		# this is so that the last empty spot is accounted for 
 		# and the user is not allowed anymore inputs  
 		# empty_spots=list(filter(lambda spot: (spot!="O" and spot!="X"), board))
-		if not is_moves_left:
+		# if not is_moves_left:
+		# invoking the game over function 
+		if game_over(board): 
 			game_eval=evaluation(board)
 			if game_eval > 0: 
 				print(f'The winner is the robot')
@@ -252,7 +254,6 @@ def game_run(board):
 			# remove the move  
 			board[spot] = spot
 
-		print(f"this is what position scores looks like {position_scores}")
 
 		# after finding the evaluation for all the empty spots- 
 		# find the best move from all the evalauted moves and make the move 
@@ -264,12 +265,9 @@ def game_run(board):
 							-10000, -10000, -10000, 
 							-10000, -10000, -10000]
 		
-		print(f"The best moved picked is {robot_move}")
-
 		board[robot_move] = robot
 
-
-		print("The bot has chosen it's move ")
+		print("The bot has chosen it's move at spot {robot_move}")
 		display_board(board)
 
 
