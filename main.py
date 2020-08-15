@@ -145,7 +145,7 @@ def minimax(board, is_max_player):
 # by default we assume- the index corresponds to the position
 
 # populate it with large values so that the occupied spots are not picked 
-position_scores = [-10000, -10000, -10000, 
+position_scores = [ -10000, -10000, -10000, 
 					-10000, -10000, -10000, 
 					-10000, -10000, -10000]
 
@@ -163,6 +163,13 @@ def find_best_move(position_scores):
 
 
 #################################################################
+
+"""
+def reset_scores(position_scores):
+	list_len = len(position_scores) -1 
+
+"""
+#################################################################
 #### GAMEPLAY ####
 ##################
 
@@ -170,6 +177,7 @@ def initialize_game(board):
 	print("Hello human!")
 	print("I hope you're having a great day.")
 	print("Get Ready for DEFEAT.")
+	display_board(board)
 	print("Get ready to make your move.")
 
 # initialize the game 
@@ -204,10 +212,10 @@ def game_run(board):
 		while(True):
 			try:	
 				print(f"Make your move from spots {find_empty_spots(board)}")
-				display_board(board)
+				# display_board(board)
 				human_input=int(input("Please enter an integer: "))
-				#this should only take in empty spots
-				if(human_input>=0 and human_input<=8 and board[human_input]!=robot):
+				#this should only take in empty spots with no robot or human input
+				if(human_input>=0 and human_input<=8 and board[human_input]!=robot and board[human_input] != human):
 					break
 			except ValueError:
 				print("Input must be an integer value, it's right there in the instructions.")	
@@ -224,22 +232,42 @@ def game_run(board):
 		# algorithm 
 
 		# update the list of empty spots 
-		available_moves=list(filter(lambda spot: (spot!="O" and spot!="X"), board))
+		empty_spots=list(filter(lambda spot: (spot!="O" and spot!="X"), board))
+
+
+		## now we have to reset position scores  - new change 
+		position_scores = [ -10000, -10000, -10000, 
+							-10000, -10000, -10000, 
+							-10000, -10000, -10000]
+
+
 
 		# this is where minimax comes in 
 		# now run the program and find the best move out of empty spots
-		for spot in available_moves:
+		for spot in empty_spots:
 			# place the move
 			board[spot] = robot
 			# run minimax for robot turn to find the best evaluation for move
 			position_scores[spot] = minimax(board, True)
-			# remove the move and 
+			# remove the move  
 			board[spot] = spot
+
+		print(f"this is what position scores looks like {position_scores}")
 
 		# after finding the evaluation for all the empty spots- 
 		# find the best move from all the evalauted moves and make the move 
 		robot_move = find_best_move(position_scores)
+
+
+		## now we have to reset position scores  - new change 
+		position_scores = [ -10000, -10000, -10000, 
+							-10000, -10000, -10000, 
+							-10000, -10000, -10000]
+		
+		print(f"The best moved picked is {robot_move}")
+
 		board[robot_move] = robot
+
 
 		print("The bot has chosen it's move ")
 		display_board(board)
