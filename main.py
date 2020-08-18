@@ -1,13 +1,22 @@
+# the game board
 
 board= [ 0, 1, 2, 
 		 3, 4, 5, 
 		 6, 7, 8]
 
+# the players in the game 
 human = "O"
 robot= "X"
 
 # these define if the player is winning 
 def winning(board, player):
+	""" Determines if there is a winning combination in game board 
+		Args: 
+			board: list representing the game board with positions 
+			player: represents which player holds winning position
+		Returns:
+			Boolean whether there is a win or not for player
+	"""
 		#horizontal tests
 	if((board[0] == player and board[1]==player and board[2]==player) or
 		(board[3]==player and board[4]==player and board[5]==player) or
@@ -26,12 +35,17 @@ def winning(board, player):
 
 # Evaluation function of board that returns positive for robot but negative for robot 
 def evaluation(board):
+	""" Evaluates the game board to determine game state 
+		Args: 
+			board: list representing the game board with positions 
+		Returns:
+			Integer representing game state
+	"""
 	if (winning(board, human)):
 		return -10
 	elif (winning(board, robot)):
 		return +10
 	else:
-		# made draw a 5 to make the position score array to work
 		return 0
 
 
@@ -39,6 +53,12 @@ def evaluation(board):
 # the board will modify according to the move the player makes 
 # this function will simpy display that 
 def display_board(board):
+	""" Displays the list game board as a tictactoe board on the console
+		Args: 
+			board: list representing the game board with positions 
+		Returns:
+			Prints the game board as a string on the console
+	"""
 	print(f" {board[0]} | {board[1]} | {board[2]} ")
 	print("___________")
 	print(f" {board[3]} | {board[4]} | {board[5]} ")
@@ -48,6 +68,12 @@ def display_board(board):
 
 # function to check if there are any moves left on the table 
 def is_moves_left(board):
+	""" Determines if there are moves left on the baord
+		Args: 
+			board: list representing the game board with positions 
+		Returns:
+			Boolean whether there are any empty spots or not
+	"""
 	for spot in board:
 		if(spot != "O" and spot != "X"):
 			return True
@@ -55,7 +81,14 @@ def is_moves_left(board):
 	return False
 
 
+# function to find empty spots on the board 
 def find_empty_spots(board):
+	""" Finds the empty spots on the board 
+		Args: 
+			board: list representing the game board with positions 
+		Returns:
+			Returns a list of empty spots on the board
+	"""
 	empty_spots = []
 	for spot in board:
 		if(spot != "X" and spot != "O"):
@@ -66,33 +99,33 @@ def find_empty_spots(board):
 
 # function that keeps track whether the game is over or not 
 def game_over(board):
+	""" Determines if the game state is game over 
+		Args: 
+			board: list representing the game board with positions 
+		Returns:
+			Boolean whether the game is over or not
+	"""
 	game_won = (evaluation(board) == 10 or evaluation(board) == -10)
 	if game_won or not is_moves_left(board):
 		return True
 	return False
-	
 
-# the minimax function returns the max evaluation for the specific 
-# postion specified 
 
-# TODO: something to note with minimax, the base case should not always 
-# be when the board is filled, it can also stop when an evaluation is met 
 
 def minimax(board, is_max_player):
+	""" Finds the best evaluation of game tree for robot for spot in gameplay
+		Args: 
+			board: list representing the game board with positions 
+			is_max_player : boolean whether it is the robot or not
+		Returns:
+			Integer value for maximum evaluation for robot in game tree
+	"""
 	# variable holds changing empty spots on the board based on game tree 
-	# empty_spots=list(filter(lambda spot: (spot != "O" and spot != "X"), board))
 	empty_spots = find_empty_spots(board)
-	# print(f"Empty spots in gameplay {empty_spots}")
 
 	# base case 
-	#if depth == 0:
-	#if not is_moves_left(board):
-	#  CHANGE DONE HERE 
 	if game_over(board): 
 		board_eval = evaluation(board)
-
-		# append board evaluation to position scores 
-		# position_scores.append(board_eval)
 		return board_eval
 
 
@@ -102,9 +135,6 @@ def minimax(board, is_max_player):
 		# no go through each child of that position 
 		for spot in empty_spots:
 			
-			# testing 
-			#print(f"this is what board returns in minimax {display_board(board)}")
-
 			# the board is modified to include the move
 			board[spot] = robot
 			
@@ -153,6 +183,12 @@ position_scores = [ -10000, -10000, -10000,
 # this finds the best move in the list of scores and returns the best move, 
 # the best move is the index of the score - within position scores 
 def find_best_move(position_scores):
+	""" Finds the index of the higest score in position scores
+		Args: 
+			position_scores: list representing the scores for positions to play in board
+		Returns:
+			Integer index presenting position in board 
+	"""
 	max_score = position_scores[0]
 	best_move = 0
 	for score in position_scores:
@@ -166,11 +202,17 @@ def find_best_move(position_scores):
 
 
 
-#################################################################
+##################
 #### GAMEPLAY ####
 ##################
 
-def initialize_game(board):
+def initialize_game(board):	
+	""" Initializes the game for player
+		Args: 
+			board: list representing the game board with positions 
+		Returns:
+			Prints to screen to prompt the user to begin playing
+	"""
 	print("Hello human!")
 	print("I hope you're having a great day.")
 	print("Get Ready for DEFEAT.")
@@ -181,19 +223,22 @@ def initialize_game(board):
 initialize_game(board)
 
 # Now for the main program loop - the gameplay portion of the game
-
-
 def game_run(board):
+	""" Game play portion
+		Args: 
+			board: list representing the game board with positions 
+		Returns:
+			Interactive gameplay 
+	"""
 	while(True):
 		# this is so that the last empty spot is accounted for 
 		# and the user is not allowed anymore inputs  
 		# empty_spots=list(filter(lambda spot: (spot!="O" and spot!="X"), board))
-		# if not is_moves_left:
 		# invoking the game over function 
 		if game_over(board): 
 			game_eval=evaluation(board)
 			if game_eval > 0: 
-				print(f'The winner is the robot!')
+				print(f'THE WINNER IS THE ROBOT!')
 				break # this is for there for the game play to end 
 			elif game_eval < 0:
 				print(f'The winner is the you - it must be a bug please be nice to my bot :(')
@@ -204,26 +249,24 @@ def game_run(board):
 			break
 
 
-		#this works for the human input - takes a valid input and breaks the loop 
+		# this works for the human input - takes a valid input and breaks the loop 
 		# the while loop is not broken until the right input is put
 		while(True):
 			try:	
 				print(f"Make your move from spots {find_empty_spots(board)}")
-				# display_board(board)
-				human_input=int(input("Please enter an integer: "))
-				#this should only take in empty spots with no robot or human input
-				if(human_input>=0 and human_input<=8 and board[human_input]!=robot and board[human_input] != human):
+
+				human_input=int(input("Please enter an number: "))
+				
+				# this should only take in empty spots with no robot or human input
+				if(human_input >= 0 and human_input <= 8 and board[human_input] != robot and board[human_input] != human):
 					break
 			except ValueError:
-				print("Input must be an integer value, it's right there in the instructions.")	
+				print("Input must be an number value, it's right there in the instructions.")	
 			else:
 				print("That box is not empty - try again")
 
 		# Now to take that human input and add it to the board 
 		board[human_input] = human 
-
-		# display the board again 
-		# display_board(board)
 
 		# Now for the robot to choose the best move based on the minimax
 		# algorithm 
@@ -261,9 +304,11 @@ def game_run(board):
 							-10000, -10000, -10000]
 		
 		# make the robot move
-		board[robot_move] = robot
-
-		print(f"The bot has chosen it's move at spot {robot_move}")
+		# adding a statement so that it does not override the plates move here
+		# if there is already nothing occupied there
+		if board[robot_move] != robot and board[robot_move] != human:
+			board[robot_move] = robot
+			print(f"The bot has chosen it's move at spot {robot_move}")
 		
 		# finally display board before asking for input again
 		display_board(board)
