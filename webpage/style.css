@@ -1,0 +1,21 @@
+body{
+    background-color: white;
+    align-items: center;
+    align-content: center;
+}
+
+input{
+    top: -9999em;
+}
+
+.board{
+    position: absolute;
+    top: 50%;
+    left: 55%;
+    width: 50vmin;
+    height: 50vmin;
+    transform: translate(-50%, -50%);
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+}
