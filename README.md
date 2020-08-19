@@ -12,3 +12,7 @@ Download the file and run the command in your terminal in the game directory
 ```
 python3 main.py
 ```
+
+## More information about how it works:
+https://towardsdatascience.com/how-a-chess-playing-computer-thinks-about-its-next-move-8f028bd0e7b1
+<img src="https://media.geeksforgeeks.org/wp-content/uploads/TIC_TAC.jpg">
